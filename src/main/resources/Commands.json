@@ -7,60 +7,60 @@
     "Kill": [
       {
         "Display": "Kill all entities",
-        "Command": "/kill @e[range=1000000]",
+        "Command": "kill @e",
         "Info": "Kills all entities in a range of 100000 blocks"
       },
       {
         "Display": "Kill all hostile mobs",
-        "Command": "/kill @e[type=!player,type=!item,type=!armor_stand]",
+        "Command": "kill @e[type=!player,type=!item,type=!armor_stand]",
         "Info": "Kills all hostile mobs except players, items, and armor stands"
       }
     ],
     "Teleport": [
       {
         "Display": "Teleport to coordinates",
-        "Command": "/tp @p 100 64 100",
+        "Command": "tp @p 100 64 100",
         "Info": "Teleports the nearest player to coordinates x=100, y=64, z=100"
       },
       {
         "Display": "Teleport all players to spawn",
-        "Command": "/tp @a 0 64 0",
+        "Command": "tp @a 0 64 0",
         "Info": "Teleports all players to the world spawn point at x=0, y=64, z=0"
       }
     ],
     "Give": [
       {
         "Display": "Give player diamond sword",
-        "Command": "/give @p diamond_sword",
+        "Command": "give @p minecraft:diamond_sword",
         "Info": "Gives the nearest player a diamond sword"
       },
       {
         "Display": "Give player stack of diamonds",
-        "Command": "/give @p diamond 64",
+        "Command": "give @p diamond 64",
         "Info": "Gives the nearest player a stack of 64 diamonds"
       }
     ],
     "Effect": [
       {
         "Display": "Give speed effect to player",
-        "Command": "/effect give @p minecraft:speed 60 1",
+        "Command": "effect give @p minecraft:speed 60 1",
         "Info": "Gives the nearest player speed for 60 seconds with level 1"
       },
       {
         "Display": "Remove all effects from player",
-        "Command": "/effect clear @p",
+        "Command": "effect clear @p",
         "Info": "Removes all potion effects from the nearest player"
       }
     ],
     "Weather": [
       {
         "Display": "Set weather to clear",
-        "Command": "/weather clear",
+        "Command": "weather clear",
         "Info": "Clears the weather"
       },
       {
         "Display": "Set weather to rain",
-        "Command": "/weather rain",
+        "Command": "weather rain",
         "Info": "Changes the weather to rain"
       }
     ]
