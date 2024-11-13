@@ -1,91 +1,56 @@
 package net.pizzaboten.craftengine.Screens;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.pizzaboten.craftengine.CraftEngine;
-import net.pizzaboten.craftengine.widgets.ScrollableSectionWidget;
 import net.pizzaboten.craftengine.CommandButton;
+import net.pizzaboten.craftengine.CraftEngine;
+import net.pizzaboten.craftengine.widgets.ScrollableRenderable;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import net.minecraft.client.gui.components.FittingMultiLineTextWidget;
+import static net.pizzaboten.craftengine.CraftEngine.LOGGER;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class CraftEngineMenu extends Screen {
     private final Screen parentScreen;
-    private ScrollableSectionWidget scrollableSection;
-    private final List<CommandButton> commandButtons = new ArrayList<>();
+    private ScrollableRenderable scrollableSection;
+    private final List<AbstractWidget> buttons = new ArrayList<>();
 
     public CraftEngineMenu(Screen parentScreen) {
         super(Component.literal("Craft Engine"));
         this.parentScreen = parentScreen;
+
     }
 
     @Override
     protected void init() {
         addReturnButton();
-
-        // Erstelle den scrollbaren Bereich
-        int scrollX = this.width / 2 - 80;
-        int scrollY = 60;
-        int scrollWidth = 160;
-        int scrollHeight = this.height - 100;
-
-        scrollableSection = new ScrollableSectionWidget(scrollX, scrollY, scrollWidth, scrollHeight, Component.literal("Commands"));
+        fillButtonsList();
+        scrollableSection = new ScrollableRenderable(Minecraft.getInstance(), this.width - 40,this.height-40, 10, this.width / 2 - ((this.width - 40) / 2) , buttons);
         this.addRenderableWidget(scrollableSection);
-
-        // Füge die Command-Buttons zur Liste hinzu, ohne sie direkt als Widgets hinzuzufügen
-        addCommandButtons();
     }
 
-    private void addCommandButtons() {
-        JSONObject json = CraftEngine.COMMANDS;
-        JSONObject commands = json.getJSONObject("Commands");
-        Iterator<String> keys = commands.keys();
-
-        int yOff = 10;
-        while (keys.hasNext()) {
-            String category = keys.next();
-            JSONArray commandArray = commands.getJSONArray(category);
-            for (int i = 0; i < commandArray.length(); i++) {
-                JSONObject command = commandArray.getJSONObject(i);
-                String commandString = command.getString("Command");
-                String displayString = command.getString("Display");
-
-                // Erstelle einen CommandButton und füge ihn zur Liste hinzu
-                CommandButton commandButton = new CommandButton(commandString, scrollableSection.getX() + 5, yOff, 150, 20, displayString);
-                commandButtons.add(commandButton);
-
-                yOff += 30; // Abstand zwischen den Buttons
-            }
-        }
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        guiGraphics.drawCenteredString(this.font, this.title.getString(), this.width / 2, 40, 0xFFFFFF);
-
-        // Rendere den Scrollbereich und passe die Positionen der Buttons an
-        super.render(guiGraphics, mouseX, mouseY, delta);
-        renderScrollableSection(guiGraphics);
-    }
-
-    private void renderScrollableSection(GuiGraphics guiGraphics) {
-        int scrollOffset = (int) scrollableSection.scrollAmount();
-
-        for (CommandButton button : commandButtons) {
-            // Berechne die verschobene Y-Position basierend auf dem Scroll-Offset
-            int adjustedY = button.getY() - scrollOffset;
-
-            // Stelle sicher, dass der Button innerhalb des sichtbaren Bereichs des Scrollbereichs liegt
-            if (adjustedY >= scrollableSection.getY() && adjustedY <= scrollableSection.getY() + scrollableSection.getHeight()) {
-                // Setze die neue Position und rendere den Button
-                button.setY(adjustedY);
-                button.render(guiGraphics, 0, 0, 0);
+    private void fillButtonsList() {
+        buttons.removeAll(buttons);
+        JSONObject commands = CraftEngine.COMMANDS.getJSONObject("Commands");
+        for (String category : commands.keySet()) {
+            buttons.add(new FittingMultiLineTextWidget(0, 0, this.width - 40 - 10, 20, Component.literal(category), Minecraft.getInstance().font));
+            JSONArray commandList = commands.getJSONArray(category);
+            for (int i = 0; i < commandList.length(); i++) {
+                JSONObject command = commandList.getJSONObject(i);
+                buttons.add(new CommandButton(
+                        command.getString("Command"),
+                        0,
+                        0,
+                        this.width - 40 - 10,
+                        20,
+                        command.getString("Display")
+                ));
             }
         }
     }
@@ -101,7 +66,7 @@ public class CraftEngineMenu extends Screen {
     private void addReturnButton() {
         this.addRenderableWidget(Button.builder(Component.literal("Return"), button -> {
             Minecraft.getInstance().setScreen(parentScreen);
-        }).bounds(this.width / 2 - 102, this.height / 4 + 147, 204, 20).build());
+        }).bounds(this.width / 2 - 102, this.height-40 + 10 + 5, 204, 20).build());
     }
 
     @Override

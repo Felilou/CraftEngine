@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Mod.EventBusSubscriber(modid = CraftEngine.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config
 {
+    public static Integer SCREEN_WIDTH;
+
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
     private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
