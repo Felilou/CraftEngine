@@ -16,6 +16,8 @@ import com.mojang.logging.LogUtils;
 import org.json.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 
 @Mod(CraftEngine.MOD_ID)
 public class CraftEngine {
@@ -29,21 +31,25 @@ public class CraftEngine {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private static JSONObject LoadCommands() {
-        JSONObject json = new JSONObject("{error: 'Error loading commands'}");
-        try {
-            File f = new File("file.json");
-            if (f.exists()) {
-                InputStream is = new FileInputStream("file.json");
-                String jsonTxt = IOUtils.toString(is, "UTF-8");
-                System.out.println(jsonTxt);
-                json = new JSONObject(jsonTxt);
+
+        private static JSONObject LoadCommands() {
+            JSONObject json = new JSONObject("{error: 'Error loading commands'}");
+            try {
+                InputStream is = CraftEngine.class.getClassLoader().getResourceAsStream("Commands.json");
+
+                if (is != null) {
+                    String jsonTxt = IOUtils.toString(is, StandardCharsets.UTF_8);
+                    json = new JSONObject(jsonTxt);
+                } else {
+                    throw new RuntimeException("File not found in resources folder: Commands.json");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return json;
         }
-        return json;
-    }
+
+
 
     private void commonSetup(final FMLClientSetupEvent event) {
         LOGGER.info("Common setup complete!");
