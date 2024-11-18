@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 public class Config
 {
 
+    public static int permissionLevel = 4;
+
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
     private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER

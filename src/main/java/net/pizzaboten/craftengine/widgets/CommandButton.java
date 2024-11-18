@@ -1,22 +1,18 @@
 package net.pizzaboten.craftengine.widgets;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.pizzaboten.craftengine.CraftEngine;
 
 public class CommandButton extends Button {
 
-    protected CommandButton(int pX, int pY, int pWidth, int pHeight, Component pMessage, OnPress pOnPress, CreateNarration pCreateNarration) {
-        super(pX, pY, pWidth, pHeight, pMessage, pOnPress, pCreateNarration);
-    }
-
-    protected CommandButton(Builder builder) {
-        super(builder);
-    }
-
-    public CommandButton(String command, int x, int y, int width, int height, String display) {
+    public CommandButton(String command, int x, int y, int width, int height, String display, String description) {
         super(Button.builder(Component.literal(display), button -> {
             CraftEngine.executeCommand(command);
-        }).bounds(x, y, width, height));
+        }).bounds(x, y, width, height).tooltip(Tooltip.create(Component.literal("Command: " + command + "\nDescription: "+description))));
     }
+
 }
