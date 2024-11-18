@@ -2,6 +2,7 @@ package net.pizzaboten.craftengine;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
@@ -59,7 +60,9 @@ public class CraftEngine {
 
     public static void executeCommand(String command) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+
         LOGGER.info("Executing command: {}", command);
+
         if (command.contains("@p")) {
             Optional<String> playerName = server.getPlayerList().getPlayers().stream()
                     .map(player -> player.getGameProfile().getName())
@@ -73,7 +76,10 @@ public class CraftEngine {
             }
         }
 
-        CommandSourceStack commandSourceStack = server.createCommandSourceStack().withPermission(4);
+        assert Minecraft.getInstance().player != null;
+        int permissionLevel = Minecraft.getInstance().player.getPermissionLevel();
+
+        CommandSourceStack commandSourceStack = server.createCommandSourceStack().withPermission(permissionLevel);
         CommandDispatcher<CommandSourceStack> commandDispatcher = server.getCommands().getDispatcher();
 
         try {
