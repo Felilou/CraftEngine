@@ -4,8 +4,8 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
-
 version = mod_version
 group = mod_group_id
 
@@ -127,6 +127,7 @@ dependencies {
     // If the group id is "net.minecraft" and the artifact id is one of ["client", "server", "joined"],
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation 'org.json:json:20210307'
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -180,6 +181,14 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Version': project.jar.archiveVersion,
                 'Implementation-Vendor' : mod_authors
         ])
+    }
+}
+
+// Configure the shadowJar task
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar).configure {
+    // Include the org.json dependency in the shadow JAR
+    dependencies {
+        include(dependency('org.json:json:20210307'))
     }
 }
 
