@@ -2,10 +2,13 @@ package net.pizzaboten.craftengine;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.execution.ExecutionContext;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -21,6 +24,7 @@ import org.json.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 @Mod(CraftEngine.MOD_ID)
 public class CraftEngine {
@@ -61,8 +65,7 @@ public class CraftEngine {
 
     public static void executeCommand(String command) {
         assert Minecraft.getInstance().player != null;
-        LocalPlayer player = Minecraft.getInstance().player;
-        player.createCommandSourceStack();
+        Minecraft.getInstance().player.connection.sendCommand(command);
     }
 
 
