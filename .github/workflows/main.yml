@@ -1,0 +1,32 @@
+name: Build and Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin' # Specify the Java distribution
+        java-version: '21'
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Push to build branch
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout -b build
+        git add .
+        git commit -m "Build artifacts"
+        git push --force origin build
