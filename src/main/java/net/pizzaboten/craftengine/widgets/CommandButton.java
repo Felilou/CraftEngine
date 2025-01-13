@@ -9,10 +9,41 @@ import net.pizzaboten.craftengine.CraftEngine;
 
 public class CommandButton extends Button {
 
+    String command;
+    String description;
+    String display;
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
+    }
+
     public CommandButton(String command, int x, int y, int width, int height, String display, String description) {
         super(Button.builder(Component.literal(display), button -> {
             CraftEngine.executeCommand(command);
-        }).bounds(x, y, width, height).tooltip(Tooltip.create(Component.literal("Command: " + command + "\nDescription: "+description))));
+        }).bounds(x, y, width, height).tooltip(Tooltip.create(Component.literal("Command: " + command + "\nDescription: "+description + "\nSHIFT + Click on button assign (MAX 4)"))));
+        this.command = command;
+        this.description = description;
+        this.display = display;
     }
 
 }

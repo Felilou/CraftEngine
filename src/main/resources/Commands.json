@@ -8,7 +8,7 @@
       {
         "Display": "Kill all entities",
         "Command": "kill @e",
-        "Info": "Kills all entities in a range of 100000 blocks"
+        "Info": "Kills all entities"
       },
       {
         "Display": "Kill all hostile mobs",

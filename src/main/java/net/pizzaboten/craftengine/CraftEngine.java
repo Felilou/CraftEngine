@@ -2,8 +2,12 @@ package net.pizzaboten.craftengine;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -56,20 +60,9 @@ public class CraftEngine {
     }
 
     public static void executeCommand(String command) {
-
-        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        if(server == null) {
-            return;
-        }
-        CommandSourceStack commandSourceStack = server.createCommandSourceStack().withPermission(Config.permissionLevel);
-        CommandDispatcher<CommandSourceStack> commandDispatcher = server.getCommands().getDispatcher();
-
-        try {
-            ParseResults<CommandSourceStack> results = commandDispatcher.parse(command, commandSourceStack);
-            server.getCommands().performCommand(results, command);
-        } catch (Exception e) {
-            LOGGER.error("Failed to execute command: {}", command, e);
-        }
+        assert Minecraft.getInstance().player != null;
+        LocalPlayer player = Minecraft.getInstance().player;
+        player.createCommandSourceStack();
     }
 
 
