@@ -14,8 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 public class CraftEngineMenu extends Screen{
@@ -35,6 +33,24 @@ public class CraftEngineMenu extends Screen{
     }
 
     @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if(hasShiftDown()){
+            for(AbstractWidget widget : CommandListWidgets){
+                if(widget instanceof CommandButton commandButton&&widget.isHovered()){
+                    saveCommand(commandButton);
+                }
+            }
+            for(int i=0;i<varCommands.size();i++){
+                if(varCommands.get(i).isMouseOver(mouseX, mouseY)){
+                    removeWidget(varCommands.get(i));
+                    varCommands.removeAll(List.of(varCommands.get(i)));
+                }
+            }
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
     protected void init() {
         initTopContainer();
         initInfoString();
@@ -45,21 +61,6 @@ public class CraftEngineMenu extends Screen{
     public void render (@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         scrollableSection.filter = editBox.getValue();
-        if(hasShiftDown()){
-            for(AbstractWidget widget : CommandListWidgets){
-                if(widget instanceof CommandButton commandButton&&widget.isHovered()){
-                    saveCommand(commandButton);
-                }
-            }
-
-            System.out.println(varCommands.size());
-            for(int i=0;i<varCommands.size();i++){
-                if(!varCommands.isEmpty()&&varCommands.get(i).isMouseOver(mouseX, mouseY)){
-                    removeWidget(varCommands.get(i));
-                    varCommands.removeAll(List.of(varCommands.get(i)));
-                }
-            }
-        }
     }
 
     private void initInfoString() {
@@ -105,19 +106,20 @@ public class CraftEngineMenu extends Screen{
 
         int[] vals = new int[]{100+25*3, 100+25*2, 100+25, 100};
         varCommands.add(commandButton);
-        addRenderableWidget(commandButton);
-        for(CommandButton button : varCommands){
-            for(int i=0; i<vals.length;i++){
-                if(button.getY()==vals[i]){
-                    vals[i] = 0;
+        for(int val : vals){
+            boolean used = false;
+            for(CommandButton btn : varCommands){
+                if(btn.getY() == val){
+                    used = true;
+                    break;
                 }
             }
-        }
-        for(int i = 0; i < vals.length ; i++) {
-            if(vals[i]!=0){
-                commandButton.setY(vals[i]);
+            if(!used){
+                commandButton.setY(val);
+                break;
             }
         }
+        addRenderableWidget(commandButton);
     }
 
     private void initTopContainer() {
