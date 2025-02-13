@@ -22,8 +22,8 @@ public class scrollableWidget extends ScrollPanel {
     public final int BAR_WIDTH = 6;
     public String filter = "";
 
-    public scrollableWidget(Minecraft client, int width, int height, int top, int left, List<AbstractWidget> abstractWidgets) {
-        super(client, width, height, top, left);
+    public scrollableWidget(Minecraft client, int width, int height, int top, int left, List<AbstractWidget> abstractWidgets, int border) {
+        super(client, width, height, top, left, border);
         this.abstractWidgets = abstractWidgets;
     }
 

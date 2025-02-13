@@ -2,6 +2,7 @@ package net.pizzaboten.craftengine;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FileHandler {
@@ -11,6 +12,9 @@ public class FileHandler {
     //writes the given text to the file without overwriting the file
     public void saveCommand(String text) {
         try {
+            if(Arrays.asList(getCommands()).contains(text)){
+                return;
+            }
             FileWriter fw = new FileWriter(dataFile, true);
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(text);

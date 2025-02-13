@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.pizzaboten.craftengine.FileHandler;
@@ -53,6 +52,11 @@ public class CraftEngineMenu extends Screen{
             System.out.println(Arrays.toString(fileHandler.getCommands()));
             return true;
         }
+        for(CommandButton commandButton : varCommands){
+            if(commandButton.isMouseOver(mouseX, mouseY)){
+                commandButton.onClick(mouseX, mouseY);
+            }
+        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -67,16 +71,17 @@ public class CraftEngineMenu extends Screen{
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         scrollableSection.filter = editBox.getValue();
         varCommands.forEach(commandButton -> commandButton.render(guiGraphics, mouseX, mouseY, partialTicks));
-        guiGraphics.drawString(Minecraft.getInstance().font, "Quick Access", 5, 102, 0xFFFFFFFF, false);
+        guiGraphics.drawString(Minecraft.getInstance().font, "Quick Access", 5, 62, 0xFFFFFFFF, false);
         guiGraphics.fill(0, 0, 0, 0, 0);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, "Craft Engine", this.width / 2, 10, 0xFFFFFFFF);
     }
 
     private void initScrollSection() {
 
-        scrollableSection = new scrollableWidget(Minecraft.getInstance(), this.width - 150,this.height-100, 100, 145, CommandListWidgets);
+        scrollableSection = new scrollableWidget(Minecraft.getInstance(), this.width - 150,this.height-60, 60, 145, CommandListWidgets, 2);
 
         if (scrollableSection.contentHeight() < scrollableSection.getHeight()){
-            scrollableSection = new scrollableWidget(Minecraft.getInstance(), this.width - 150, scrollableSection.contentHeight() + 4, 100, 145, CommandListWidgets);
+            scrollableSection = new scrollableWidget(Minecraft.getInstance(), this.width - 150, scrollableSection.contentHeight() + 4, 60, 145, CommandListWidgets, 2);
         }
 
         addRenderableWidget(scrollableSection);
@@ -91,7 +96,7 @@ public class CraftEngineMenu extends Screen{
             return;
         }
 
-        int[] vals = new int[]{90+25*5, 90+25*4, 90+25*3, 90+25*2, 90+25};
+        int[] vals = new int[]{50+25*5, 50+25*4, 50+25*3, 50+25*2, 50+25};
         varCommands.add(commandButton);
         for(int val : vals){
             boolean used = false;
@@ -110,16 +115,13 @@ public class CraftEngineMenu extends Screen{
     }
 
     private void initTopContainer() {
+        this.addRenderableWidget(Button.builder(Component.literal("Done"), button -> {
+            Minecraft.getInstance().setScreen(parentScreen);
+        }).pos(5, this.height - 10 - 20).size(145-10, 20).build());
 
-        this.addRenderableWidget(Button.builder(Component.literal("←"), button -> Minecraft.getInstance().setScreen(parentScreen)).bounds( 5, 5, 17, 18).build());
-        MultiLineTextWidget title = new MultiLineTextWidget(0, 10, Component.literal("Craft Engine"), Minecraft.getInstance().font);
-        Checkbox checkbox = Checkbox.builder(Component.literal("Pause"), Minecraft.getInstance().font).pos(5, 25+2).onValueChange( (valChange, is) -> isPause = is).selected(isPause).build();
-        editBox = new EditBox(Minecraft.getInstance().font,  145,78, this.width - 150, 15, Component.literal("Search..."));
-        title.setX(this.width / 2 - title.getWidth() / 2);
 
+        editBox = new EditBox(Minecraft.getInstance().font,  75,40, this.width - 150, 15, Component.empty());
         this.addRenderableWidget(editBox);
-        this.addRenderableWidget(title);
-        this.addRenderableWidget(checkbox);
     }
 
     private void fillButtonsList() {
@@ -147,7 +149,8 @@ public class CraftEngineMenu extends Screen{
         for(String command : commandss){
             for(AbstractWidget button : CommandListWidgets) {
                 if(button instanceof CommandButton && ((CommandButton) button).getCommand().equals(command)){
-                    saveCommand((CommandButton) button);
+                    CommandButton commandButton = new CommandButton(command, 5, 100, 145-10, 20, command, command);
+                    saveCommand(commandButton);
                 }
             }
         }
