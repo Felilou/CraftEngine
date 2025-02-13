@@ -7,6 +7,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.pizzaboten.craftengine.Screens.CraftEngineMenu;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class CraftEngineScreenInjector
 {
     @SubscribeEvent
@@ -15,7 +18,11 @@ public class CraftEngineScreenInjector
         if (event.getScreen() instanceof PauseScreen screen)
         {
             event.addListener(Button.builder(Component.literal("Commands"), button -> {
-                Minecraft.getInstance().setScreen(new CraftEngineMenu(screen));
+                try {
+                    Minecraft.getInstance().setScreen(new CraftEngineMenu(screen));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }).bounds(screen.width / 2 - 102, screen.height / 4 + 146, 204, 20).build());
         }
     }
